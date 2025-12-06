@@ -10,7 +10,7 @@ app.use("/", (req, res, next) => {
     res.send("API is running...");
 })  
 
-mongoose.connect("mongodb+srv://admin:TkebXeTKOr4BbTjk@cluster1.fm3j61n.mongodb.net/")
+mongoose.connect("mongodb+srv://admin:TkebXeTKOr4BbTjk@cluster1.fm3j61n.mongodb.net/admin")
 .then(() => console.log("Connected to MongoDB"))
 .then(() => {
     app.listen(5000);

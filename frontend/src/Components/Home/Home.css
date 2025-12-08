@@ -6,8 +6,12 @@
 .hero {
   background: linear-gradient(135deg, #87CEEB 0%, #4682B4 100%);
   color: white;
-  padding: 5rem 2rem;
+  padding: 1.5rem 2rem;
   text-align: center;
+}
+
+.hero-content {
+  margin-top: -1.5rem;
 }
 
 .hero-content h1 {
@@ -63,6 +67,89 @@
   transform: translateY(-2px);
 }
 
+/* Disaster Types Section */
+.disaster-types-section {
+  padding: 3rem 2rem;
+  background-color: #f8f9fa;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.disaster-types-section h2 {
+  text-align: center;
+  color: #2c3e50;
+  margin-bottom: 2.5rem;
+  margin-top: -2rem;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.disaster-types-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1.5rem;
+}
+
+.disaster-type-card {
+  background-color: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+  cursor: pointer;
+}
+
+.disaster-type-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.disaster-type-image {
+  width: 100%;
+  height: 150px;
+  overflow: hidden;
+  border: 3px solid #2874A6;
+  border-radius: 10px 10px 0 0;
+}
+
+.disaster-type-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s;
+}
+
+.disaster-type-card:hover .disaster-type-image img {
+  transform: scale(1.1);
+}
+
+.disaster-type-card h3 {
+  text-align: center;
+  padding: 1rem;
+  color: #2c3e50;
+  font-size: 1.1rem;
+  font-weight: 600;
+  background-color: #f8f9fa;
+}
+
+@media (max-width: 1024px) {
+  .disaster-types-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .disaster-types-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .disaster-types-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Statistics Section */
 .stats-section {
   padding: 3rem 2rem;
@@ -73,13 +160,13 @@
   max-width: 1200px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 2rem;
 }
 
 .stat-card {
   background-color: white;
-  padding: 2rem;
+  padding: 1.5rem;
   border-radius: 10px;
   text-align: center;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -113,6 +200,43 @@
   color: #2c3e50;
   margin-bottom: 2rem;
   font-size: 2rem;
+}
+
+/* Small Disaster Stats Boxes */
+.disaster-stats {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+  flex-wrap: wrap;
+}
+
+.disaster-stat-box {
+  background-color: #5DADE2;
+  color: white;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  text-align: center;
+  min-width: 120px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s;
+}
+
+.disaster-stat-box:hover {
+  transform: translateY(-3px);
+}
+
+.disaster-stat-box h3 {
+  font-size: 1.8rem;
+  margin: 0;
+  margin-bottom: 0.3rem;
+  font-weight: 700;
+}
+
+.disaster-stat-box p {
+  font-size: 0.85rem;
+  margin: 0;
+  opacity: 0.95;
 }
 
 .disasters-grid {

@@ -18,6 +18,7 @@
   "homepage": "https://github.com/Adhi-247/Real-World-Problem-Solve#readme",
   "description": "",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^5.2.1",
     "mongoose": "^9.0.1",
     "nodemon": "^3.1.11"

@@ -1,7 +1,9 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Home.css';
 
 const Home = () => {
+  const navigate = useNavigate();
   // Sample disaster data
   const disasters = [
     {
@@ -38,30 +40,45 @@ const Home = () => {
           <h1>Sri Lanka Disaster Relief Platform</h1>
           <p>Helping communities during floods, tsunamis, and natural disasters</p>
           <div className="hero-buttons">
-            <button className="btn-primary">Request Help</button>
+            <button className="btn-primary" onClick={() => navigate('/request-help')}>Request Help</button>
             <button className="btn-secondary">Report Missing Person</button>
           </div>
         </div>
       </section>
 
-      {/* Statistics Section */}
-      <section className="stats-section">
-        <div className="stats-container">
-          <div className="stat-card">
-            <h2>150+</h2>
-            <p>Active Help Requests</p>
+      {/* Disaster Types Section */}
+      <section className="disaster-types-section">
+        <h2>Types of Disasters We Monitor</h2>
+        <div className="disaster-types-grid">
+          <div className="disaster-type-card">
+            <div className="disaster-type-image">
+              <img src="/images/tsunami.jpg" alt="Tsunami" />
+            </div>
+            <h3>Tsunami</h3>
           </div>
-          <div className="stat-card">
-            <h2>3</h2>
-            <p>Current Disasters</p>
+          <div className="disaster-type-card">
+            <div className="disaster-type-image">
+              <img src="/images/floods.jpg" alt="Floods" />
+            </div>
+            <h3>Floods</h3>
           </div>
-          <div className="stat-card">
-            <h2>8,700+</h2>
-            <p>People Affected</p>
+          <div className="disaster-type-card">
+            <div className="disaster-type-image">
+              <img src="/images/wildfire.jpg" alt="Wildfire" />
+            </div>
+            <h3>Wildfire</h3>
           </div>
-          <div className="stat-card">
-            <h2>45</h2>
-            <p>Missing Persons</p>
+          <div className="disaster-type-card">
+            <div className="disaster-type-image">
+              <img src="/images/landslide.jpg" alt="Landslide" />
+            </div>
+            <h3>Landslide</h3>
+          </div>
+          <div className="disaster-type-card">
+            <div className="disaster-type-image">
+              <img src="/images/cyclone.jpg" alt="Cyclone" />
+            </div>
+            <h3>Cyclone</h3>
           </div>
         </div>
       </section>
@@ -69,6 +86,27 @@ const Home = () => {
       {/* Active Disasters Section */}
       <section className="disasters-section">
         <h2>Current Active Disasters</h2>
+        
+        {/* Small Stats Boxes */}
+        <div className="disaster-stats">
+          <div className="disaster-stat-box">
+            <h3>150+</h3>
+            <p>Help Requests</p>
+          </div>
+          <div className="disaster-stat-box">
+            <h3>3</h3>
+            <p>Active Disasters</p>
+          </div>
+          <div className="disaster-stat-box">
+            <h3>8,700+</h3>
+            <p>People Affected</p>
+          </div>
+          <div className="disaster-stat-box">
+            <h3>45</h3>
+            <p>Missing Persons</p>
+          </div>
+        </div>
+
         <div className="disasters-grid">
           {disasters.map(disaster => (
             <div key={disaster.id} className="disaster-card">
@@ -97,19 +135,19 @@ const Home = () => {
             <span className="action-icon">🆘</span>
             <h3>Request Help</h3>
             <p>Need emergency assistance? Submit a help request</p>
-            <button className="action-btn">Get Help</button>
+            <button className="action-btn" onClick={() => navigate('/request-help')}>Get Help</button>
           </div>
           <div className="action-card">
             <span className="action-icon">🔍</span>
             <h3>Find Missing Person</h3>
             <p>Search for or report missing persons</p>
-            <button className="action-btn">Search</button>
+            <button className="action-btn" onClick={() => navigate('/missing-persons')}>Search</button>
           </div>
           <div className="action-card">
             <span className="action-icon">🌊</span>
             <h3>View Disasters</h3>
             <p>Check current disaster situations</p>
-            <button className="action-btn">View All</button>
+            <button className="action-btn" onClick={() => navigate('/disasters')}>View All</button>
           </div>
           <div className="action-card">
             <span className="action-icon">🤝</span>

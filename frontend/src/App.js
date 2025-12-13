@@ -7,6 +7,7 @@ import RequestHelp from './Components/RequestHelp/RequestHelp';
 import MissingPerson from './Components/MissingPerson/MissingPerson';
 import Login from './Components/Login/Login';
 import AdminDashboard from './Components/AdminDashboard/AdminDashboard';
+import Volunteer from './Components/Volunteer/Volunteer';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path="/request-help" element={<RequestHelp />} />
           <Route path="/missing-persons" element={<MissingPerson />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/volunteer" element={<Volunteer />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
         </Routes>
         <Footer />

@@ -120,3 +120,131 @@ exports.getAdminProfile = async (req, res) => {
     });
   }
 };
+
+// Get All Admins
+exports.getAllAdmins = async (req, res) => {
+  try {
+    const admins = await Admin.find().select('-password').sort({ createdAt: -1 });
+    
+    res.status(200).json({
+      success: true,
+      count: admins.length,
+      data: admins
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      success: false, 
+      message: error.message 
+    });
+  }
+};
+
+// Get Admin By ID
+exports.getAdminById = async (req, res) => {
+  try {
+    const admin = await Admin.findById(req.params.id).select('-password');
+    
+    if (!admin) {
+      return res.status(404).json({ 
+        success: false, 
+        message: 'Admin not found' 
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: admin
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      success: false, 
+      message: error.message 
+    });
+  }
+};
+
+// Update Admin
+exports.updateAdmin = async (req, res) => {
+  try {
+    const { username, email, adminId, department, status } = req.body;
+    
+    const admin = await Admin.findById(req.params.id);
+    
+    if (!admin) {
+      return res.status(404).json({ 
+        success: false, 
+        message: 'Admin not found' 
+      });
+    }
+
+    // Check if username or email is already taken by another admin
+    if (username || email) {
+      const existingAdmin = await Admin.findOne({
+        _id: { $ne: req.params.id },
+        $or: [
+          { username: username || admin.username },
+          { email: email || admin.email }
+        ]
+      });
+
+      if (existingAdmin) {
+        return res.status(400).json({
+          success: false,
+          message: 'Username or email already taken'
+        });
+      }
+    }
+
+    admin.username = username || admin.username;
+    admin.email = email || admin.email;
+    admin.adminId = adminId || admin.adminId;
+    admin.department = department || admin.department;
+    if (status !== undefined) admin.status = status;
+
+    await admin.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Admin updated successfully',
+      data: {
+        id: admin._id,
+        username: admin.username,
+        email: admin.email,
+        adminId: admin.adminId,
+        department: admin.department,
+        status: admin.status
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      success: false, 
+      message: error.message 
+    });
+  }
+};
+
+// Delete Admin
+exports.deleteAdmin = async (req, res) => {
+  try {
+    const admin = await Admin.findById(req.params.id);
+    
+    if (!admin) {
+      return res.status(404).json({ 
+        success: false, 
+        message: 'Admin not found' 
+      });
+    }
+
+    await Admin.findByIdAndDelete(req.params.id);
+
+    res.status(200).json({
+      success: true,
+      message: 'Admin deleted successfully'
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      success: false, 
+      message: error.message 
+    });
+  }
+};

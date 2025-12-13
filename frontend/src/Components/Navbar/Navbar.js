@@ -91,6 +91,15 @@ const Navbar = () => {
                     <span className="dropdown-icon">👤</span>
                     Profile
                   </Link>
+                  {userRole === 'admin' && (
+                    <>
+                      <Link to="/admin/dashboard" className="dropdown-item admin-dashboard-item" onClick={() => setShowDropdown(false)}>
+                        <span className="dropdown-icon">🔐</span>
+                        Admin Dashboard
+                      </Link>
+                      <div className="dropdown-divider"></div>
+                    </>
+                  )}
                   <Link to="/settings" className="dropdown-item" onClick={() => setShowDropdown(false)}>
                     <span className="dropdown-icon">⚙️</span>
                     Settings

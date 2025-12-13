@@ -4,6 +4,17 @@ import './Home.css';
 
 const Home = () => {
   const navigate = useNavigate();
+  
+  const handleVolunteerClick = () => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      navigate('/volunteer');
+    } else {
+      alert('Please login or create an account to become a volunteer');
+      navigate('/login');
+    }
+  };
+
   // Sample disaster data
   const disasters = [
     {
@@ -153,7 +164,7 @@ const Home = () => {
             <span className="action-icon">🤝</span>
             <h3>Volunteer</h3>
             <p>Help others in your community</p>
-            <button className="action-btn">Join</button>
+            <button className="action-btn" onClick={handleVolunteerClick}>Join</button>
           </div>
         </div>
       </section>

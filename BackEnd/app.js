@@ -11,6 +11,7 @@ const helpRequestRoutes = require('./Routes/helpRequestRoutes');
 const missingPersonRoutes = require('./Routes/missingPersonRoutes');
 const userRoutes = require('./Routes/userRoutes');
 const adminRoutes = require('./Routes/adminRoutes');
+const volunteerRoutes = require('./Routes/volunteerRoutes');
 
 // Middleware
 app.use(cors()); // Enable CORS for frontend
@@ -22,6 +23,7 @@ app.use('/api', helpRequestRoutes);
 app.use('/api', missingPersonRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/admins', adminRoutes);
+app.use('/api/volunteers', volunteerRoutes);
 
 // Root route
 app.get("/", (req, res) => {

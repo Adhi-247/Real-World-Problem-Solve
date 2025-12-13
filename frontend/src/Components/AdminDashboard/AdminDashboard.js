@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import AdminManagement from '../AdminManagement/AdminManagement';
+import UserManagement from '../UserManagement/UserManagement';
+import VolunteerManagement from '../VolunteerManagement/VolunteerManagement';
 import './AdminDashboard.css';
 
 const AdminDashboard = () => {
@@ -45,6 +48,13 @@ const AdminDashboard = () => {
           </button>
 
           <button 
+            className={activeSection === 'volunteers' ? 'nav-btn active' : 'nav-btn'}
+            onClick={() => setActiveSection('volunteers')}
+          >
+            🤝 Volunteer Management
+          </button>
+
+          <button 
             className={activeSection === 'disasters' ? 'nav-btn active' : 'nav-btn'}
             onClick={() => setActiveSection('disasters')}
           >
@@ -81,6 +91,7 @@ const AdminDashboard = () => {
             {activeSection === 'help-requests' && '📋 Help Requests Management'}
             {activeSection === 'missing-persons' && '🔍 Missing Persons Management'}
             {activeSection === 'users' && '👥 User Management'}
+            {activeSection === 'volunteers' && '🤝 Volunteer Management'}
             {activeSection === 'disasters' && '🌊 Active Disasters Management'}
             {activeSection === 'admins' && '👨‍💼 Admin Management'}
           </h1>
@@ -88,10 +99,39 @@ const AdminDashboard = () => {
         </div>
 
         <div className="content-body">
-          <div className="coming-soon">
-            <h2>Management Panel Coming Soon</h2>
-            <p>This section is under development</p>
-          </div>
+          {activeSection === 'dashboard' && (
+            <div className="coming-soon">
+              <h2>Dashboard Statistics Coming Soon</h2>
+              <p>This section is under development</p>
+            </div>
+          )}
+          
+          {activeSection === 'admins' && <AdminManagement />}
+          
+          {activeSection === 'users' && <UserManagement />}
+          
+          {activeSection === 'volunteers' && <VolunteerManagement />}
+          
+          {activeSection === 'disasters' && (
+            <div className="coming-soon">
+              <h2>Active Disasters Management Coming Soon</h2>
+              <p>This section is under development</p>
+            </div>
+          )}
+          
+          {activeSection === 'help-requests' && (
+            <div className="coming-soon">
+              <h2>Help Requests Management Coming Soon</h2>
+              <p>This section is under development</p>
+            </div>
+          )}
+          
+          {activeSection === 'missing-persons' && (
+            <div className="coming-soon">
+              <h2>Missing Persons Management Coming Soon</h2>
+              <p>This section is under development</p>
+            </div>
+          )}
         </div>
       </div>
     </div>

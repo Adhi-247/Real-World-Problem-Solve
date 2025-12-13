@@ -52,6 +52,7 @@ const Login = () => {
       if (data.success) {
         localStorage.setItem('token', data.data.token);
         localStorage.setItem('username', data.data.username);
+        localStorage.setItem('userId', data.data.id);
         localStorage.setItem('userRole', isAdminLogin ? 'admin' : 'user');
         
         alert(`${isAdminLogin ? 'Admin' : 'User'} login successful!`);
@@ -110,6 +111,7 @@ const Login = () => {
       if (data.success) {
         localStorage.setItem('token', data.data.token);
         localStorage.setItem('username', data.data.username);
+        localStorage.setItem('userId', data.data.id);
         localStorage.setItem('userRole', 'user');
         
         alert('Registration successful! Welcome to Sri Lanka Disaster Relief.');

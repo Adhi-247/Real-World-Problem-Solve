@@ -5,6 +5,8 @@ import Home from './Components/Home/Home';
 import Footer from './Components/Footer/Footer';
 import RequestHelp from './Components/RequestHelp/RequestHelp';
 import MissingPerson from './Components/MissingPerson/MissingPerson';
+import Login from './Components/Login/Login';
+import AdminDashboard from './Components/AdminDashboard/AdminDashboard';
 
 function App() {
   return (
@@ -15,6 +17,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/request-help" element={<RequestHelp />} />
           <Route path="/missing-persons" element={<MissingPerson />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
         </Routes>
         <Footer />
       </div>

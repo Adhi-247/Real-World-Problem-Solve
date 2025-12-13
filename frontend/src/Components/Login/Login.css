@@ -1,0 +1,256 @@
+.login-page {
+  height: 100vh;
+  display: flex;
+  background: #f5f5f5;
+  overflow: hidden;
+}
+
+/* Left Side - Information */
+.login-info-side {
+  flex: 1;
+  background: linear-gradient(135deg, #2874A6 0%, #5DADE2 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.info-content {
+  max-width: 500px;
+}
+
+.info-content h1 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
+
+.info-content h2 {
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  font-weight: 400;
+  opacity: 0.95;
+}
+
+.feature-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.feature-item {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.feature-icon {
+  font-size: 1.8rem;
+  flex-shrink: 0;
+}
+
+.feature-item h3 {
+  font-size: 1rem;
+  margin-bottom: 0.2rem;
+  font-weight: 600;
+}
+
+.feature-item p {
+  font-size: 0.85rem;
+  opacity: 0.9;
+  line-height: 1.4;
+}
+
+/* Right Side - Login Form */
+.login-form-side {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1.5rem;
+  background: #f8f9fa;
+  overflow-y: auto;
+  max-height: 100vh;
+}
+
+.login-box {
+  width: 100%;
+  max-width: 480px;
+  padding: 1.5rem;
+  border-radius: 15px;
+  background: white;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  margin: auto;
+}
+
+.login-box h1 {
+  color: #2874A6;
+  font-size: 1.6rem;
+  margin-bottom: 0.3rem;
+  text-align: center;
+}
+
+.login-box p {
+  color: #666;
+  margin-bottom: 1.2rem;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: #333;
+  font-size: 0.85rem;
+}
+
+.form-group input {
+  padding: 0.65rem 0.9rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #2874A6;
+  box-shadow: 0 0 0 3px rgba(40, 116, 166, 0.1);
+}
+
+.login-btn {
+  padding: 0.75rem;
+  background: linear-gradient(135deg, #1ABC9C 0%, #16a085 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 0.3rem;
+}
+
+.login-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(26, 188, 156, 0.3);
+}
+
+.login-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.error-message {
+  padding: 0.65rem;
+  background-color: #fee;
+  border: 1px solid #fcc;
+  border-radius: 8px;
+  color: #c33;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+.signup-link {
+  text-align: center;
+  margin-top: 0.8rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid #e0e0e0;
+}
+
+.signup-link p {
+  color: #666;
+  font-size: 0.8rem;
+  margin: 0;
+}
+
+.signup-link a {
+  color: #2874A6;
+  text-decoration: none;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.signup-link a:hover {
+  text-decoration: underline;
+}
+
+.toggle-login {
+  margin-top: 0.8rem;
+  text-align: center;
+}
+
+.toggle-btn {
+  background: transparent;
+  border: 2px solid #2874A6;
+  color: #2874A6;
+  padding: 0.55rem 1.3rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.toggle-btn:hover {
+  background: #2874A6;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(40, 116, 166, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .login-page {
+    flex-direction: column;
+  }
+
+  .login-info-side {
+    padding: 40px 30px;
+  }
+
+  .info-content h1 {
+    font-size: 2rem;
+  }
+
+  .info-content h2 {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+  }
+
+  .feature-list {
+    gap: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .login-info-side {
+    padding: 30px 20px;
+  }
+
+  .login-form-side {
+    padding: 30px 20px;
+  }
+
+  .feature-item {
+    gap: 15px;
+  }
+
+  .feature-icon {
+    font-size: 2rem;
+  }
+}

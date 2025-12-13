@@ -9,6 +9,8 @@ const app = express();
 // Import Routes
 const helpRequestRoutes = require('./Routes/helpRequestRoutes');
 const missingPersonRoutes = require('./Routes/missingPersonRoutes');
+const userRoutes = require('./Routes/userRoutes');
+const adminRoutes = require('./Routes/adminRoutes');
 
 // Middleware
 app.use(cors()); // Enable CORS for frontend
@@ -18,6 +20,8 @@ app.use(express.urlencoded({ limit: '50mb', extended: true })); // Parse URL-enc
 // Routes
 app.use('/api', helpRequestRoutes);
 app.use('/api', missingPersonRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/admins', adminRoutes);
 
 // Root route
 app.get("/", (req, res) => {

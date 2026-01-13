@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import AdminManagement from '../AdminManagement/AdminManagement';
 import UserManagement from '../UserManagement/UserManagement';
 import VolunteerManagement from '../VolunteerManagement/VolunteerManagement';
+import HelpRequestManagement from '../HelpRequestManagement/HelpRequestManagement';
+import MissingPersonManagement from '../MissingPersonManagement/MissingPersonManagement';
 import './AdminDashboard.css';
 
 const AdminDashboard = () => {
@@ -119,19 +121,9 @@ const AdminDashboard = () => {
             </div>
           )}
           
-          {activeSection === 'help-requests' && (
-            <div className="coming-soon">
-              <h2>Help Requests Management Coming Soon</h2>
-              <p>This section is under development</p>
-            </div>
-          )}
+          {activeSection === 'help-requests' && <HelpRequestManagement />}
           
-          {activeSection === 'missing-persons' && (
-            <div className="coming-soon">
-              <h2>Missing Persons Management Coming Soon</h2>
-              <p>This section is under development</p>
-            </div>
-          )}
+          {activeSection === 'missing-persons' && <MissingPersonManagement />}
         </div>
       </div>
     </div>

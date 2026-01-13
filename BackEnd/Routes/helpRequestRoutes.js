@@ -4,7 +4,8 @@ const {
   createHelpRequest,
   getAllHelpRequests,
   getHelpRequestById,
-  updateHelpRequestStatus
+  updateHelpRequestStatus,
+  deleteHelpRequest
 } = require('../Controllers/helpRequestController');
 
 // POST - Create new help request
@@ -18,5 +19,8 @@ router.get('/help-requests/:id', getHelpRequestById);
 
 // PUT - Update help request status
 router.put('/help-requests/:id/status', updateHelpRequestStatus);
+
+// DELETE - Delete help request
+router.delete('/help-requests/:id', deleteHelpRequest);
 
 module.exports = router;

@@ -218,10 +218,38 @@ const updateMissingPersonStatus = async (req, res) => {
   }
 };
 
+// Delete missing person report
+const deleteMissingPerson = async (req, res) => {
+  try {
+    const missingPerson = await MissingPerson.findByIdAndDelete(req.params.id);
+
+    if (!missingPerson) {
+      return res.status(404).json({
+        success: false,
+        message: 'Missing person not found'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Missing person report deleted successfully'
+    });
+
+  } catch (error) {
+    console.error('Error deleting missing person:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to delete missing person',
+      error: error.message
+    });
+  }
+};
+
 module.exports = {
   reportMissingPerson,
   searchMissingPersons,
   getAllMissingPersons,
   getMissingPersonById,
-  updateMissingPersonStatus
+  updateMissingPersonStatus,
+  deleteMissingPerson
 };

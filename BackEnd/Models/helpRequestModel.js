@@ -79,7 +79,7 @@ const helpRequestSchema = new mongoose.Schema({
   // Status
   status: {
     type: String,
-    enum: ['pending', 'in-progress', 'resolved'],
+    enum: ['pending', 'in-progress', 'completed', 'rejected'],
     default: 'pending'
   },
   

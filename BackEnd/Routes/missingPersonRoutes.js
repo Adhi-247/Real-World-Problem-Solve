@@ -5,7 +5,8 @@ const {
   searchMissingPersons,
   getAllMissingPersons,
   getMissingPersonById,
-  updateMissingPersonStatus
+  updateMissingPersonStatus,
+  deleteMissingPerson
 } = require('../Controllers/missingPersonController');
 
 // POST - Report new missing person
@@ -22,5 +23,8 @@ router.get('/missing-persons/:id', getMissingPersonById);
 
 // PUT - Update missing person status
 router.put('/missing-persons/:id/status', updateMissingPersonStatus);
+
+// DELETE - Delete missing person report
+router.delete('/missing-persons/:id', deleteMissingPerson);
 
 module.exports = router;

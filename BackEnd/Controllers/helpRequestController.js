@@ -112,7 +112,7 @@ const updateHelpRequestStatus = async (req, res) => {
   try {
     const { status } = req.body;
     
-    if (!['pending', 'in-progress', 'resolved'].includes(status)) {
+    if (!['pending', 'in-progress', 'completed', 'rejected'].includes(status)) {
       return res.status(400).json({
         success: false,
         message: 'Invalid status value'
@@ -148,9 +148,37 @@ const updateHelpRequestStatus = async (req, res) => {
   }
 };
 
+// Delete help request
+const deleteHelpRequest = async (req, res) => {
+  try {
+    const helpRequest = await HelpRequest.findByIdAndDelete(req.params.id);
+
+    if (!helpRequest) {
+      return res.status(404).json({
+        success: false,
+        message: 'Help request not found'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Help request deleted successfully'
+    });
+
+  } catch (error) {
+    console.error('Error deleting help request:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to delete help request',
+      error: error.message
+    });
+  }
+};
+
 module.exports = {
   createHelpRequest,
   getAllHelpRequests,
   getHelpRequestById,
-  updateHelpRequestStatus
+  updateHelpRequestStatus,
+  deleteHelpRequest
 };

@@ -52,7 +52,7 @@ const Home = () => {
           <p>Helping communities during floods, tsunamis, and natural disasters</p>
           <div className="hero-buttons">
             <button className="btn-primary" onClick={() => navigate('/request-help')}>Request Help</button>
-            <button className="btn-secondary">Report Missing Person</button>
+            <button className="btn-secondary" onClick={() => navigate('/missing-persons')}>Report Missing Person</button>
           </div>
         </div>
       </section>
@@ -61,31 +61,31 @@ const Home = () => {
       <section className="disaster-types-section">
         <h2>Types of Disasters We Monitor</h2>
         <div className="disaster-types-grid">
-          <div className="disaster-type-card">
+          <div className="disaster-type-card" onClick={() => navigate('/disasters/tsunami')} role="button" tabIndex={0}>
             <div className="disaster-type-image">
               <img src="/images/tsunami.jpg" alt="Tsunami" />
             </div>
             <h3>Tsunami</h3>
           </div>
-          <div className="disaster-type-card">
+          <div className="disaster-type-card" onClick={() => navigate('/disasters/floods')} role="button" tabIndex={0}>
             <div className="disaster-type-image">
               <img src="/images/floods.jpg" alt="Floods" />
             </div>
             <h3>Floods</h3>
           </div>
-          <div className="disaster-type-card">
+          <div className="disaster-type-card" onClick={() => navigate('/disasters/wildfire')} role="button" tabIndex={0}>
             <div className="disaster-type-image">
               <img src="/images/wildfire.jpg" alt="Wildfire" />
             </div>
             <h3>Wildfire</h3>
           </div>
-          <div className="disaster-type-card">
+          <div className="disaster-type-card" onClick={() => navigate('/disasters/landslide')} role="button" tabIndex={0}>
             <div className="disaster-type-image">
               <img src="/images/landslide.jpg" alt="Landslide" />
             </div>
             <h3>Landslide</h3>
           </div>
-          <div className="disaster-type-card">
+          <div className="disaster-type-card" onClick={() => navigate('/disasters/cyclone')} role="button" tabIndex={0}>
             <div className="disaster-type-image">
               <img src="/images/cyclone.jpg" alt="Cyclone" />
             </div>

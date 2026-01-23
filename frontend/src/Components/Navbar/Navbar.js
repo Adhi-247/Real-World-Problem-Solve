@@ -71,7 +71,7 @@ const Navbar = () => {
         
         <ul className="navbar-menu">
           <li><Link to="/">Home</Link></li>
-          <li><Link to="/disasters">Active Disasters</Link></li>
+          <li><Link to="/active-disasters">Active Disasters</Link></li>
           <li><Link to="/request-help">Help Requests</Link></li>
           <li><Link to="/missing-persons">Missing Persons</Link></li>
         </ul>

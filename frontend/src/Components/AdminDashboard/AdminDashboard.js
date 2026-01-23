@@ -5,6 +5,7 @@ import UserManagement from '../UserManagement/UserManagement';
 import VolunteerManagement from '../VolunteerManagement/VolunteerManagement';
 import HelpRequestManagement from '../HelpRequestManagement/HelpRequestManagement';
 import MissingPersonManagement from '../MissingPersonManagement/MissingPersonManagement';
+import ActiveDisasterManagement from '../ActiveDisasterManagement/ActiveDisasterManagement';
 import './AdminDashboard.css';
 
 const AdminDashboard = () => {
@@ -114,12 +115,7 @@ const AdminDashboard = () => {
           
           {activeSection === 'volunteers' && <VolunteerManagement />}
           
-          {activeSection === 'disasters' && (
-            <div className="coming-soon">
-              <h2>Active Disasters Management Coming Soon</h2>
-              <p>This section is under development</p>
-            </div>
-          )}
+          {activeSection === 'disasters' && <ActiveDisasterManagement />}
           
           {activeSection === 'help-requests' && <HelpRequestManagement />}
           

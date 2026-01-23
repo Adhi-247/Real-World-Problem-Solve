@@ -15,6 +15,7 @@ import Landslide from './Components/Disasters/Landslide/Landslide';
 import Cyclone from './Components/Disasters/Cyclone/Cyclone';
 import DisastersHub from './Components/Disasters/DisastersHub/DisastersHub';
 import PageHeader from './Components/PageHeader/PageHeader';
+import ActiveDisasters from './Components/ActiveDisasters/ActiveDisasters';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         <PageHeader />
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/active-disasters" element={<ActiveDisasters />} />
           <Route path="/disasters" element={<DisastersHub />} />
           <Route path="/request-help" element={<RequestHelp />} />
           <Route path="/missing-persons" element={<MissingPerson />} />

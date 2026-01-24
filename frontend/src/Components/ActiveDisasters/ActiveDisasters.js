@@ -55,7 +55,9 @@ const ActiveDisasters = () => {
   const navigate = useNavigate();
   const [disasters, setDisasters] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [selectedDisaster, setSelectedDisaster] = useState(null);
+  const [loadingDetails, setLoadingDetails] = useState(false);
   const [filterType, setFilterType] = useState('all');
   const [filterUrgency, setFilterUrgency] = useState('all');
 
@@ -66,7 +68,22 @@ const ActiveDisasters = () => {
   const fetchDisasters = async () => {
     try {
       setLoading(true);
-      const res = await fetch('http://localhost:5000/api/help-requests');
+      setError('');
+      
+      // Create abort controller for timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout for images
+      
+      const res = await fetch('http://localhost:5000/api/help-requests?limit=10&includeImages=true', { 
+        signal: controller.signal 
+      });
+      
+      clearTimeout(timeoutId);
+      
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+      
       const data = await res.json();
       
       if (data.success) {
@@ -79,8 +96,29 @@ const ActiveDisasters = () => {
       }
     } catch (error) {
       console.error('Error fetching disasters:', error);
+      if (error.name === 'AbortError') {
+        setError('Request timed out. Please check your internet connection or try again later.');
+      } else {
+        setError(`Failed to load disasters: ${error.message}`);
+      }
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchDisasterDetails = async (disasterId) => {
+    try {
+      setLoadingDetails(true);
+      const res = await fetch(`http://localhost:5000/api/help-requests/${disasterId}`);
+      const data = await res.json();
+      
+      if (data.success) {
+        setSelectedDisaster(data.data);
+      }
+    } catch (error) {
+      console.error('Error fetching disaster details:', error);
+    } finally {
+      setLoadingDetails(false);
     }
   };
 
@@ -145,7 +183,15 @@ const ActiveDisasters = () => {
         </div>
 
         {loading ? (
-          <div className="loading">Loading disasters...</div>
+          <div className="loading">
+            <div className="spinner"></div>
+            <p>Loading disasters...</p>
+          </div>
+        ) : error ? (
+          <div className="error-container">
+            <p className="error-message">{error}</p>
+            <button className="retry-btn" onClick={fetchDisasters}>Retry</button>
+          </div>
         ) : filteredDisasters.length === 0 ? (
           <div className="no-results">No disasters found matching your filters.</div>
         ) : (
@@ -169,7 +215,7 @@ const ActiveDisasters = () => {
                     <p>👥 {disaster.peopleAffected?.toLocaleString()} affected</p>
                     <p>📅 {formatDate(disaster.createdAt)}</p>
                   </div>
-                  <button className="details-btn" onClick={() => setSelectedDisaster(disaster)}>
+                  <button className="details-btn" onClick={() => fetchDisasterDetails(disaster._id)}>
                     View Details
                   </button>
                 </div>
@@ -185,13 +231,20 @@ const ActiveDisasters = () => {
           <div className="modal" onClick={(e) => e.stopPropagation()}>
             <button className="close-btn" onClick={() => setSelectedDisaster(null)}>×</button>
             
-            {selectedDisaster.images && selectedDisaster.images.length > 0 && (
-              <div className="modal-images">
-                {selectedDisaster.images.map((img, idx) => (
-                  <img key={idx} src={img} alt={`Disaster ${idx + 1}`} />
-                ))}
+            {loadingDetails ? (
+              <div className="modal-loading">
+                <div className="spinner"></div>
+                <p>Loading details...</p>
               </div>
-            )}
+            ) : (
+              <>
+                {selectedDisaster.images && selectedDisaster.images.length > 0 && (
+                  <div className="modal-images">
+                    {selectedDisaster.images.map((img, idx) => (
+                      <img key={idx} src={img} alt={`Disaster ${idx + 1}`} />
+                    ))}
+                  </div>
+                )}
             
             <div className="modal-body">
               <div className="modal-header">
@@ -235,6 +288,8 @@ const ActiveDisasters = () => {
                 🤝 Volunteer to Help
               </button>
             </div>
+              </>
+            )}
           </div>
         </div>
       )}

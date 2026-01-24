@@ -92,4 +92,11 @@ const helpRequestSchema = new mongoose.Schema({
   timestamps: true
 });
 
+// Create indexes for better query performance
+helpRequestSchema.index({ createdAt: -1 }); // For sorting by date
+helpRequestSchema.index({ urgency: 1 }); // For filtering by urgency
+helpRequestSchema.index({ status: 1 }); // For filtering by status
+helpRequestSchema.index({ disasterType: 1 }); // For filtering by type
+helpRequestSchema.index({ district: 1 }); // For location-based queries
+
 module.exports = mongoose.model('HelpRequest', helpRequestSchema);

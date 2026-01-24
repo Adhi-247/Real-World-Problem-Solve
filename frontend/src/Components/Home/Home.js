@@ -70,6 +70,7 @@ const Home = () => {
     missingPersons: 0
   });
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [selectedDisaster, setSelectedDisaster] = useState(null);
 
   useEffect(() => {
@@ -79,13 +80,21 @@ const Home = () => {
   const fetchDisasters = async () => {
     try {
       setLoading(true);
+      setError('');
       
-      // Fetch help requests (these are the disaster reports from users)
-      const helpRes = await fetch('http://localhost:5000/api/help-requests');
+      // Create abort controller for timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout for images
+      
+      // Fetch both in parallel for faster loading - limit to 6 for fast load with images
+      const [helpRes, missingRes] = await Promise.all([
+        fetch('http://localhost:5000/api/help-requests?limit=6&includeImages=true', { signal: controller.signal }),
+        fetch('http://localhost:5000/api/missing-persons', { signal: controller.signal })
+      ]);
+      
+      clearTimeout(timeoutId);
+      
       const helpData = await helpRes.json();
-      
-      // Fetch missing persons count
-      const missingRes = await fetch('http://localhost:5000/api/missing-persons');
       const missingData = await missingRes.json();
       
       if (helpData.success) {
@@ -112,6 +121,11 @@ const Home = () => {
       }
     } catch (error) {
       console.error('Error fetching disasters:', error);
+      if (error.name === 'AbortError') {
+        setError('Request timed out. The server might be slow or unavailable.');
+      } else {
+        setError('Failed to load disaster data. Please check your connection.');
+      }
     } finally {
       setLoading(false);
     }
@@ -221,7 +235,15 @@ const Home = () => {
         </div>
 
         {loading ? (
-          <div className="loading-spinner">Loading disasters...</div>
+          <div className="loading-spinner">
+            <div className="spinner"></div>
+            <p>Loading disasters...</p>
+          </div>
+        ) : error ? (
+          <div className="error-banner">
+            <p>⚠️ {error}</p>
+            <button className="retry-button" onClick={fetchDisasters}>Retry</button>
+          </div>
         ) : disasters.length === 0 ? (
           <div className="no-disasters">
             <p>No active disasters reported at the moment.</p>

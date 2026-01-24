@@ -59,14 +59,45 @@ const createHelpRequest = async (req, res) => {
   }
 };
 
-// Get all help requests
+// Get all help requests with pagination and filtering
 const getAllHelpRequests = async (req, res) => {
   try {
-    const helpRequests = await HelpRequest.find().sort({ createdAt: -1 });
+    console.log('📥 Fetching help requests...', new Date().toISOString());
+    const startTime = Date.now();
+    
+    const { page = 1, limit = 20, status, urgency, disasterType, includeImages = 'false' } = req.query;
+    
+    // Build query filter
+    const filter = {};
+    if (status) filter.status = status;
+    if (urgency) filter.urgency = urgency;
+    if (disasterType) filter.disasterType = disasterType;
+    
+    // Calculate pagination
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    
+    // Build projection - exclude images by default to reduce payload size
+    const projection = includeImages === 'true' ? {} : { images: 0 };
+    
+    // Execute query with pagination
+    const [helpRequests, total] = await Promise.all([
+      HelpRequest.find(filter, projection)
+        .sort({ createdAt: -1 })
+        .limit(parseInt(limit))
+        .skip(skip)
+        .lean(), // Use lean() for faster queries
+      HelpRequest.countDocuments(filter)
+    ]);
+    
+    const duration = Date.now() - startTime;
+    console.log(`✅ Query completed in ${duration}ms - Found ${helpRequests.length} records`);
     
     res.status(200).json({
       success: true,
       count: helpRequests.length,
+      total: total,
+      page: parseInt(page),
+      pages: Math.ceil(total / parseInt(limit)),
       data: helpRequests
     });
 

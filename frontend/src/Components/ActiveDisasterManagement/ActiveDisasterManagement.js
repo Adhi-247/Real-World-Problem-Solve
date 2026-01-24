@@ -83,7 +83,22 @@ const ActiveDisasterManagement = () => {
   const fetchDisasters = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:5000/api/help-requests');
+      setError('');
+      
+      // Create abort controller for timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout for images
+      
+      const response = await fetch('http://localhost:5000/api/help-requests?limit=10&includeImages=true', { 
+        signal: controller.signal 
+      });
+      
+      clearTimeout(timeoutId);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
       const data = await response.json();
 
       if (data.success) {
@@ -93,7 +108,11 @@ const ActiveDisasterManagement = () => {
       }
     } catch (error) {
       console.error('Error fetching disasters:', error);
-      setError('Failed to fetch disasters');
+      if (error.name === 'AbortError') {
+        setError('Request timed out. The server is taking too long to respond. Please try again.');
+      } else {
+        setError(`Failed to fetch disasters: ${error.message}`);
+      }
     } finally {
       setLoading(false);
     }

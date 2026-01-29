@@ -1,18 +1,6 @@
 const mongoose = require('mongoose');
 
-const helpRequestSchema = new mongoose.Schema({
-  // Personal Information
-  name: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  phone: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  
+const activeDisasterSchema = new mongoose.Schema({
   // Disaster Information
   disasterType: {
     type: String,
@@ -51,7 +39,26 @@ const helpRequestSchema = new mongoose.Schema({
     min: 1
   },
   
-  // What They Need
+  // Description
+  description: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  
+  // Contact Information
+  phone: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  
+  // Images (Base64 encoded)
+  images: [{
+    type: String
+  }],
+  
+  // Needs
   needs: {
     food: { type: Boolean, default: false },
     water: { type: Boolean, default: false },
@@ -64,36 +71,24 @@ const helpRequestSchema = new mongoose.Schema({
     other: { type: String, default: '' }
   },
   
-  // Situation Description
-  description: {
+  // Source - where this disaster came from
+  source: {
     type: String,
-    required: true,
-    trim: true
+    enum: ['admin', 'admin-approved', 'auto-detected', 'user-report'],
+    default: 'admin'
   },
   
-  // Images (URLs or paths)
-  images: [{
-    type: String
-  }],
+  // Reference to original help request (if auto-created)
+  helpRequestId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'HelpRequest'
+  },
   
   // Status
   status: {
     type: String,
-    enum: ['pending', 'in-progress', 'completed', 'rejected'],
-    default: 'pending'
-  },
-  
-  // Disaster Approval Status (for admin to approve as active disaster)
-  disasterApprovalStatus: {
-    type: String,
-    enum: ['pending', 'approved', 'rejected', 'not-applicable'],
-    default: 'pending'
-  },
-  
-  // Reference to active disaster if approved
-  approvedDisasterId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'ActiveDisaster'
+    enum: ['active', 'resolved', 'monitoring'],
+    default: 'active'
   },
   
   // Timestamps
@@ -105,11 +100,11 @@ const helpRequestSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Create indexes for better query performance
-helpRequestSchema.index({ createdAt: -1 }); // For sorting by date
-helpRequestSchema.index({ urgency: 1 }); // For filtering by urgency
-helpRequestSchema.index({ status: 1 }); // For filtering by status
-helpRequestSchema.index({ disasterType: 1 }); // For filtering by type
-helpRequestSchema.index({ district: 1 }); // For location-based queries
+// Indexes for performance
+activeDisasterSchema.index({ createdAt: -1 });
+activeDisasterSchema.index({ urgency: 1 });
+activeDisasterSchema.index({ status: 1 });
+activeDisasterSchema.index({ disasterType: 1 });
+activeDisasterSchema.index({ district: 1 });
 
-module.exports = mongoose.model('HelpRequest', helpRequestSchema);
+module.exports = mongoose.model('ActiveDisaster', activeDisasterSchema);

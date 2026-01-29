@@ -74,6 +74,7 @@ const Navbar = () => {
           <li><Link to="/active-disasters">Active Disasters</Link></li>
           <li><Link to="/request-help">Help Requests</Link></li>
           <li><Link to="/missing-persons">Missing Persons</Link></li>
+          <li><Link to="/volunteer">Volunteer</Link></li>
         </ul>
         
         <div className="navbar-auth">
@@ -91,11 +92,19 @@ const Navbar = () => {
                     <span className="dropdown-icon">👤</span>
                     Profile
                   </Link>
-                  {userRole === 'admin' && (
+                  {userRole === 'admin' ? (
                     <>
                       <Link to="/admin/dashboard" className="dropdown-item admin-dashboard-item" onClick={() => setShowDropdown(false)}>
                         <span className="dropdown-icon">🔐</span>
                         Admin Dashboard
+                      </Link>
+                      <div className="dropdown-divider"></div>
+                    </>
+                  ) : (
+                    <>
+                      <Link to="/user/dashboard" className="dropdown-item user-dashboard-item" onClick={() => setShowDropdown(false)}>
+                        <span className="dropdown-icon">📊</span>
+                        My Dashboard
                       </Link>
                       <div className="dropdown-divider"></div>
                     </>

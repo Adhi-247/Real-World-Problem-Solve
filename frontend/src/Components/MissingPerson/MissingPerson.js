@@ -1,8 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './MissingPerson.css';
 
 const MissingPerson = () => {
-  const [activeTab, setActiveTab] = useState('search'); // 'search' or 'report'
+  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState('search');
+  const [showAuthWarning, setShowAuthWarning] = useState(false);
+
+  useEffect(() => {
+    if (activeTab === 'report') {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setShowAuthWarning(true);
+      } else {
+        setShowAuthWarning(false);
+      }
+    }
+  }, [activeTab]);
 
   return (
     <div className="missing-person-page">
@@ -31,6 +45,21 @@ const MissingPerson = () => {
         {/* Content Based on Active Tab */}
         {activeTab === 'search' ? (
           <SearchMissingPerson />
+        ) : showAuthWarning ? (
+          <div className="auth-warning">
+            <div className="auth-message">
+              <h3>🔒 Authentication Required</h3>
+              <p>You must be signed in to report a missing person</p>
+              <div className="auth-buttons">
+                <button onClick={() => navigate('/login')} className="login-btn">
+                  Sign In
+                </button>
+                <button onClick={() => navigate('/login')} className="signup-btn">
+                  Sign Up
+                </button>
+              </div>
+            </div>
+          </div>
         ) : (
           <ReportMissingPerson />
         )}

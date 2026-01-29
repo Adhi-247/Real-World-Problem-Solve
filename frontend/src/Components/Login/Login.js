@@ -332,9 +332,9 @@ const Login = () => {
             <div className="signup-link">
               <p>
                 {isSignupMode ? 'Already have an account? ' : "Don't have an account? "}
-                <a href="#" onClick={(e) => { e.preventDefault(); toggleMode(); }}>
+                <button type="button" className="link-button" onClick={toggleMode}>
                   {isSignupMode ? 'Login here' : 'Sign up here'}
-                </a>
+                </button>
               </p>
             </div>
           )}

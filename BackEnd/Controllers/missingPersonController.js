@@ -58,7 +58,6 @@ const reportMissingPerson = async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Error reporting missing person:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to submit missing person report',
@@ -120,7 +119,6 @@ const searchMissingPersons = async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Error searching missing persons:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to search missing persons',
@@ -141,7 +139,6 @@ const getAllMissingPersons = async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Error fetching missing persons:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to fetch missing persons',
@@ -168,7 +165,6 @@ const getMissingPersonById = async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Error fetching missing person:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to fetch missing person',
@@ -209,7 +205,6 @@ const updateMissingPersonStatus = async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Error updating missing person:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to update missing person',
@@ -236,7 +231,6 @@ const deleteMissingPerson = async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Error deleting missing person:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to delete missing person',

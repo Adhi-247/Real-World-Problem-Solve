@@ -55,11 +55,14 @@ const ImageCarousel = ({ images, autoPlay = true, interval = 3000 }) => {
 
 const ActiveDisasterManagement = () => {
   const [disasters, setDisasters] = useState([]);
+  const [pendingApprovals, setPendingApprovals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [selectedDisaster, setSelectedDisaster] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showApprovalModal, setShowApprovalModal] = useState(false);
+  const [selectedApproval, setSelectedApproval] = useState(null);
   const [filterStatus, setFilterStatus] = useState('all');
   const [filterType, setFilterType] = useState('all');
   const [filterUrgency, setFilterUrgency] = useState('all');
@@ -78,6 +81,10 @@ const ActiveDisasterManagement = () => {
 
   useEffect(() => {
     fetchDisasters();
+    fetchPendingApprovals();
+    // Poll for new approvals every 30 seconds
+    const interval = setInterval(fetchPendingApprovals, 30000);
+    return () => clearInterval(interval);
   }, []);
 
   const fetchDisasters = async () => {
@@ -89,9 +96,7 @@ const ActiveDisasterManagement = () => {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout for images
       
-      const response = await fetch('http://localhost:5000/api/help-requests?limit=10&includeImages=true', { 
-        signal: controller.signal 
-      });
+      const response = await fetch('http://localhost:5000/api/active-disasters');
       
       clearTimeout(timeoutId);
       
@@ -115,6 +120,71 @@ const ActiveDisasterManagement = () => {
       }
     } finally {
       setLoading(false);
+    }
+  };
+
+  // 🆕 Fetch pending approvals from help requests
+  const fetchPendingApprovals = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/help-requests/pending-approvals');
+      const data = await response.json();
+      
+      if (data.success) {
+        setPendingApprovals(data.data || []);
+      }
+    } catch (error) {
+      console.error('Error fetching pending approvals:', error);
+    }
+  };
+
+  // 🆕 Approve help request as active disaster
+  const handleApproveDisaster = async (requestId) => {
+    if (!window.confirm('Approve this as an active disaster?')) return;
+    
+    try {
+      console.log('Approving request:', requestId);
+      const response = await fetch(`http://localhost:5000/api/help-requests/${requestId}/approve-disaster`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      const data = await response.json();
+      console.log('Approval response:', data);
+
+      if (data.success) {
+        alert('✅ Approved as Active Disaster!');
+        fetchDisasters();
+        fetchPendingApprovals();
+        setShowApprovalModal(false);
+      } else {
+        alert('Failed to approve: ' + data.message);
+      }
+    } catch (error) {
+      console.error('Error approving disaster:', error);
+      alert('Failed to approve disaster: ' + error.message);
+    }
+  };
+
+  // 🆕 Reject help request as disaster
+  const handleRejectDisaster = async (requestId) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/help-requests/${requestId}/reject-disaster`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        alert('❌ Rejected as disaster (remains as help request)');
+        fetchPendingApprovals();
+        setShowApprovalModal(false);
+      } else {
+        alert('Failed to reject: ' + data.message);
+      }
+    } catch (error) {
+      console.error('Error rejecting disaster:', error);
+      alert('Failed to reject');
     }
   };
 
@@ -311,11 +381,59 @@ const ActiveDisasterManagement = () => {
           <button className="add-btn" onClick={() => setShowAddModal(true)}>
             ➕ Add Disaster
           </button>
-          <button className="refresh-btn" onClick={fetchDisasters}>
+          <button className="refresh-btn" onClick={() => { fetchDisasters(); fetchPendingApprovals(); }}>
             🔄 Refresh
           </button>
         </div>
       </div>
+
+      {/* 🆕 Pending Approval Notifications */}
+      {pendingApprovals.length > 0 && (
+        <div className="pending-approvals-section">
+          <div className="approval-header">
+            <h3>🔔 Pending Disaster Approvals ({pendingApprovals.length})</h3>
+            <p>Help requests waiting for your approval to become active disasters</p>
+          </div>
+          <div className="approval-cards">
+            {pendingApprovals.map(request => (
+              <div key={request._id} className="approval-card">
+                <div className="approval-info">
+                  <div className="approval-type">
+                    <span className="disaster-type-badge">{request.disasterType.toUpperCase()}</span>
+                    <span className={`urgency-badge ${request.urgency}`}>{request.urgency}</span>
+                  </div>
+                  <p className="location">📍 {request.location}, {request.district}</p>
+                  <p className="people">👥 {request.peopleAffected} people affected</p>
+                  <p className="description">{request.description.substring(0, 100)}...</p>
+                </div>
+                <div className="approval-actions">
+                  <button 
+                    className="view-details-btn"
+                    onClick={() => {
+                      setSelectedApproval(request);
+                      setShowApprovalModal(true);
+                    }}
+                  >
+                    View Details
+                  </button>
+                  <button 
+                    className="approve-btn"
+                    onClick={() => handleApproveDisaster(request._id)}
+                  >
+                    ✅ Approve as Disaster
+                  </button>
+                  <button 
+                    className="reject-btn"
+                    onClick={() => handleRejectDisaster(request._id)}
+                  >
+                    ❌ Reject
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Filters */}
       <div className="filters">
@@ -616,6 +734,85 @@ const ActiveDisasterManagement = () => {
                 <button type="submit" className="submit-btn">Add Disaster</button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* 🆕 APPROVAL MODAL */}
+      {showApprovalModal && selectedApproval && (
+        <div className="modal-overlay" onClick={() => setShowApprovalModal(false)}>
+          <div className="modal-content approval-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>📋 Review Help Request</h3>
+              <button className="close-btn" onClick={() => setShowApprovalModal(false)}>×</button>
+            </div>
+            
+            <div className="approval-details">
+              <div className="detail-row">
+                <strong>Disaster Type:</strong>
+                <span className="disaster-type-badge">{selectedApproval.disasterType}</span>
+              </div>
+              
+              <div className="detail-row">
+                <strong>Location:</strong>
+                <span>{selectedApproval.location}, {selectedApproval.district}</span>
+              </div>
+              
+              {selectedApproval.address && (
+                <div className="detail-row">
+                  <strong>Address:</strong>
+                  <span>{selectedApproval.address}</span>
+                </div>
+              )}
+              
+              <div className="detail-row">
+                <strong>People Affected:</strong>
+                <span className="people-count">{selectedApproval.peopleAffected}</span>
+              </div>
+              
+              <div className="detail-row">
+                <strong>Urgency:</strong>
+                <span className={`urgency-badge urgency-${selectedApproval.urgency}`}>
+                  {selectedApproval.urgency.toUpperCase()}
+                </span>
+              </div>
+              
+              <div className="detail-row">
+                <strong>Contact:</strong>
+                <span>{selectedApproval.name} - {selectedApproval.phone}</span>
+              </div>
+              
+              <div className="detail-row description-row">
+                <strong>Description:</strong>
+                <p>{selectedApproval.description}</p>
+              </div>
+              
+              {selectedApproval.needs && selectedApproval.needs.length > 0 && (
+                <div className="detail-row">
+                  <strong>Needs:</strong>
+                  <div className="needs-list">
+                    {selectedApproval.needs.map((need, idx) => (
+                      <span key={idx} className="need-tag">{need}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+            
+            <div className="approval-actions">
+              <button 
+                className="reject-btn" 
+                onClick={() => handleRejectDisaster(selectedApproval._id)}
+              >
+                ❌ Reject
+              </button>
+              <button 
+                className="approve-btn" 
+                onClick={() => handleApproveDisaster(selectedApproval._id)}
+              >
+                ✅ Approve as Active Disaster
+              </button>
+            </div>
           </div>
         </div>
       )}

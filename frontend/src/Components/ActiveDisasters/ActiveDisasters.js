@@ -70,15 +70,8 @@ const ActiveDisasters = () => {
       setLoading(true);
       setError('');
       
-      // Create abort controller for timeout
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout for images
-      
-      const res = await fetch('http://localhost:5000/api/help-requests?limit=10&includeImages=true', { 
-        signal: controller.signal 
-      });
-      
-      clearTimeout(timeoutId);
+      // Fetch from ACTIVE DISASTERS endpoint
+      const res = await fetch('http://localhost:5000/api/active-disasters?status=active&limit=50');
       
       if (!res.ok) {
         throw new Error(`HTTP error! status: ${res.status}`);
@@ -96,11 +89,7 @@ const ActiveDisasters = () => {
       }
     } catch (error) {
       console.error('Error fetching disasters:', error);
-      if (error.name === 'AbortError') {
-        setError('Request timed out. Please check your internet connection or try again later.');
-      } else {
-        setError(`Failed to load disasters: ${error.message}`);
-      }
+      setError(`Failed to load disasters: ${error.message}`);
     } finally {
       setLoading(false);
     }
@@ -109,7 +98,7 @@ const ActiveDisasters = () => {
   const fetchDisasterDetails = async (disasterId) => {
     try {
       setLoadingDetails(true);
-      const res = await fetch(`http://localhost:5000/api/help-requests/${disasterId}`);
+      const res = await fetch(`http://localhost:5000/api/active-disasters/${disasterId}`);
       const data = await res.json();
       
       if (data.success) {

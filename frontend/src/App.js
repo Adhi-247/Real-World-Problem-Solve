@@ -16,6 +16,11 @@ import Cyclone from './Components/Disasters/Cyclone/Cyclone';
 import DisastersHub from './Components/Disasters/DisastersHub/DisastersHub';
 import PageHeader from './Components/PageHeader/PageHeader';
 import ActiveDisasters from './Components/ActiveDisasters/ActiveDisasters';
+import Settings from './Components/Settings/Settings';
+import Privacy from './Components/Privacy/Privacy';
+import Profile from './Components/Profile/Profile';
+import Language from './Components/Language/Language';
+import UserDashboard from './Components/UserDashboard/UserDashboard';
 
 function App() {
   return (
@@ -37,6 +42,11 @@ function App() {
           <Route path="/disasters/landslide" element={<Landslide />} />
           <Route path="/disasters/cyclone" element={<Cyclone />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/user/dashboard" element={<UserDashboard />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/language" element={<Language />} />
         </Routes>
         <Footer />
       </div>

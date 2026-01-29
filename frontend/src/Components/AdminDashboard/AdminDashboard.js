@@ -6,6 +6,7 @@ import VolunteerManagement from '../VolunteerManagement/VolunteerManagement';
 import HelpRequestManagement from '../HelpRequestManagement/HelpRequestManagement';
 import MissingPersonManagement from '../MissingPersonManagement/MissingPersonManagement';
 import ActiveDisasterManagement from '../ActiveDisasterManagement/ActiveDisasterManagement';
+import DashboardStatistics from '../DashboardStatistics/DashboardStatistics';
 import './AdminDashboard.css';
 
 const AdminDashboard = () => {
@@ -102,12 +103,7 @@ const AdminDashboard = () => {
         </div>
 
         <div className="content-body">
-          {activeSection === 'dashboard' && (
-            <div className="coming-soon">
-              <h2>Dashboard Statistics Coming Soon</h2>
-              <p>This section is under development</p>
-            </div>
-          )}
+          {activeSection === 'dashboard' && <DashboardStatistics />}
           
           {activeSection === 'admins' && <AdminManagement />}
           

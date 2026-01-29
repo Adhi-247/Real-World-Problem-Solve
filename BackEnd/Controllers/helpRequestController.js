@@ -1,6 +1,7 @@
 const HelpRequest = require('../Models/helpRequestModel');
+const ActiveDisaster = require('../Models/activeDisasterModel');
 
-// Create new help request
+// Create new help request (Admin must approve to become active disaster)
 const createHelpRequest = async (req, res) => {
   try {
     const {
@@ -37,20 +38,21 @@ const createHelpRequest = async (req, res) => {
       peopleAffected,
       needs,
       description,
-      images: images || []
+      images: images || [],
+      status: 'pending',
+      disasterApprovalStatus: 'pending' // Awaits admin approval
     });
 
-    // Save to database
+    // Save help request to database
     await helpRequest.save();
 
     res.status(201).json({
       success: true,
-      message: 'Help request submitted successfully',
+      message: 'Help request submitted successfully. Admin will review it.',
       data: helpRequest
     });
 
   } catch (error) {
-    console.error('Error creating help request:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to submit help request',
@@ -62,35 +64,24 @@ const createHelpRequest = async (req, res) => {
 // Get all help requests with pagination and filtering
 const getAllHelpRequests = async (req, res) => {
   try {
-    console.log('📥 Fetching help requests...', new Date().toISOString());
-    const startTime = Date.now();
-    
     const { page = 1, limit = 20, status, urgency, disasterType, includeImages = 'false' } = req.query;
     
-    // Build query filter
     const filter = {};
     if (status) filter.status = status;
     if (urgency) filter.urgency = urgency;
     if (disasterType) filter.disasterType = disasterType;
     
-    // Calculate pagination
     const skip = (parseInt(page) - 1) * parseInt(limit);
-    
-    // Build projection - exclude images by default to reduce payload size
     const projection = includeImages === 'true' ? {} : { images: 0 };
     
-    // Execute query with pagination
     const [helpRequests, total] = await Promise.all([
       HelpRequest.find(filter, projection)
         .sort({ createdAt: -1 })
         .limit(parseInt(limit))
         .skip(skip)
-        .lean(), // Use lean() for faster queries
+        .lean(),
       HelpRequest.countDocuments(filter)
     ]);
-    
-    const duration = Date.now() - startTime;
-    console.log(`✅ Query completed in ${duration}ms - Found ${helpRequests.length} records`);
     
     res.status(200).json({
       success: true,
@@ -102,7 +93,6 @@ const getAllHelpRequests = async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Error fetching help requests:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to fetch help requests',
@@ -129,7 +119,6 @@ const getHelpRequestById = async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Error fetching help request:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to fetch help request',
@@ -170,7 +159,6 @@ const updateHelpRequestStatus = async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Error updating help request:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to update help request',
@@ -197,10 +185,126 @@ const deleteHelpRequest = async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Error deleting help request:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to delete help request',
+      error: error.message
+    });
+  }
+};
+
+// APPROVE help request as Active Disaster
+const approveAsActiveDisaster = async (req, res) => {
+  try {
+    const helpRequest = await HelpRequest.findById(req.params.id);
+
+    if (!helpRequest) {
+      return res.status(404).json({
+        success: false,
+        message: 'Help request not found'
+      });
+    }
+
+    // Check if already approved
+    if (helpRequest.disasterApprovalStatus === 'approved') {
+      return res.status(400).json({
+        success: false,
+        message: 'This request is already approved as an active disaster'
+      });
+    }
+
+    // Create Active Disaster
+    const activeDisaster = new ActiveDisaster({
+      disasterType: helpRequest.disasterType,
+      location: helpRequest.location,
+      district: helpRequest.district,
+      address: helpRequest.address,
+      urgency: helpRequest.urgency,
+      peopleAffected: helpRequest.peopleAffected,
+      description: helpRequest.description,
+      phone: helpRequest.phone,
+      images: helpRequest.images,
+      needs: helpRequest.needs,
+      source: 'admin-approved',
+      helpRequestId: helpRequest._id,
+      status: 'active'
+    });
+
+    await activeDisaster.save();
+
+    // Update help request
+    helpRequest.disasterApprovalStatus = 'approved';
+    helpRequest.approvedDisasterId = activeDisaster._id;
+    await helpRequest.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Help request approved as Active Disaster',
+      data: {
+        helpRequest,
+        activeDisaster
+      }
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Failed to approve disaster',
+      error: error.message
+    });
+  }
+};
+
+// REJECT help request as disaster (keep as help request only)
+const rejectAsActiveDisaster = async (req, res) => {
+  try {
+    const helpRequest = await HelpRequest.findByIdAndUpdate(
+      req.params.id,
+      { disasterApprovalStatus: 'rejected' },
+      { new: true }
+    );
+
+    if (!helpRequest) {
+      return res.status(404).json({
+        success: false,
+        message: 'Help request not found'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Help request will not be added to active disasters',
+      data: helpRequest
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Failed to reject approval',
+      error: error.message
+    });
+  }
+};
+
+const getPendingApprovals = async (req, res) => {
+  try {
+    const pendingRequests = await HelpRequest.find({ 
+      disasterApprovalStatus: 'pending' 
+    })
+    .select('-images')
+    .sort({ urgency: 1, createdAt: -1 })
+    .lean();
+
+    res.status(200).json({
+      success: true,
+      count: pendingRequests.length,
+      data: pendingRequests
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch pending approvals',
       error: error.message
     });
   }
@@ -211,5 +315,8 @@ module.exports = {
   getAllHelpRequests,
   getHelpRequestById,
   updateHelpRequestStatus,
-  deleteHelpRequest
+  deleteHelpRequest,
+  approveAsActiveDisaster,
+  rejectAsActiveDisaster,
+  getPendingApprovals
 };

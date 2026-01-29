@@ -1,7 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './RequestHelp.css';
 
 const RequestHelp = () => {
+  const navigate = useNavigate();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  // Check authentication
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      // Only alert once using a flag
+      const hasAlerted = sessionStorage.getItem('authAlert');
+      if (!hasAlerted) {
+        sessionStorage.setItem('authAlert', 'true');
+        alert('⚠️ Please sign in to request help');
+      }
+      navigate('/login');
+    } else {
+      setIsAuthenticated(true);
+    }
+    setLoading(false);
+    
+    // Cleanup: remove flag when component unmounts
+    return () => sessionStorage.removeItem('authAlert');
+  }, [navigate]);
+
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -160,6 +185,20 @@ const RequestHelp = () => {
       alert('Failed to submit help request. Please try again.');
     }
   };
+
+  // Show loading while checking authentication
+  if (loading) {
+    return (
+      <div className="request-help-page">
+        <div className="loading">Checking authentication...</div>
+      </div>
+    );
+  }
+
+  // If not authenticated, don't render the form (will redirect)
+  if (!isAuthenticated) {
+    return null;
+  }
 
   return (
     <div className="request-help-page">

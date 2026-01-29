@@ -28,11 +28,19 @@ const Volunteer = () => {
     // Check if user is logged in
     const token = localStorage.getItem('token');
     if (!token) {
-      alert('Please login to become a volunteer');
+      // Only alert once using a flag
+      const hasAlerted = sessionStorage.getItem('authAlert');
+      if (!hasAlerted) {
+        sessionStorage.setItem('authAlert', 'true');
+        alert('⚠️ Please login to become a volunteer');
+      }
       navigate('/login');
     } else {
       fetchMyApplications();
     }
+    
+    // Cleanup: remove flag when component unmounts
+    return () => sessionStorage.removeItem('authAlert');
   }, [navigate]);
 
   const fetchMyApplications = async () => {

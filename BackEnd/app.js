@@ -51,8 +51,12 @@ mongoose.connect(MONGODB_URI, {
     socketTimeoutMS: 45000,
 })
 .then(() => {
-    app.listen(PORT);
+    console.log('✅ MongoDB connected successfully');
+    app.listen(PORT, () => {
+        console.log(`🚀 Server is running on port ${PORT}`);
+    });
 })
 .catch((err) => {
+    console.error('❌ MongoDB connection failed:', err.message);
     process.exit(1);
 });
